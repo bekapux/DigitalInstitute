@@ -1,12 +1,6 @@
-﻿using System.Buffers.Text;
-using System.Collections;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Reflection.Metadata;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
+﻿using Task.Interfaces;
+using Task.Models;
+using Task.Utils;
 
 namespace Task
 {
@@ -14,9 +8,89 @@ namespace Task
     {
         static void Main(string[] args)
         {
+            //New Characters created
+            //Characters attack each other in turn as just Character objects
+            List<Character> characters = new List<Character>()
+            {
+                new Warrior(),
+                new Barbarian(),
+                new Sorcerer()
+            };
+
+            //Displaying character info
+            Display.CharacterInfo(characters[0]);
+            Display.CharacterInfo(characters[1]);
+            Display.CharacterInfo(characters[2]);
+
+            characters[0].BasicAttack(characters[1]);
+            characters[1].BasicAttack(characters[2]);
+            characters[2].BasicAttack(characters[0]);
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            Console.Clear();
+
+            //New Characters created
+            //Characters use skills on each other in turn as ISkill objects
+            List<ISkill> skilledCharacters = new List<ISkill>()
+            {
+                new Warrior("Garen",Enums.Races.Human),
+                new Barbarian("Olaf",Enums.Races.Dwarf),
+                new Sorcerer("Ryze",Enums.Races.HalfElf)
+            };
+
+            //Displaying character info
+            Display.CharacterInfo(skilledCharacters[0] as Character);
+            Display.CharacterInfo(skilledCharacters[1] as Character);
+            Display.CharacterInfo(skilledCharacters[2] as Character);
+
+            //Using basic skills
+            skilledCharacters[0].UseBasicSkill(skilledCharacters[1] as Character);
+            skilledCharacters[1].UseBasicSkill(skilledCharacters[2] as Character);
+            skilledCharacters[2].UseBasicSkill(skilledCharacters[0] as Character);
+
+            //Using empowered skills
+            skilledCharacters[0].UseEmpoweredSkill(skilledCharacters[1] as Character);
+            skilledCharacters[1].UseEmpoweredSkill(skilledCharacters[2] as Character);
+            skilledCharacters[2].UseEmpoweredSkill(skilledCharacters[0] as Character);
+
+            //Using ultimate skills
+            skilledCharacters[0].UseUltimateSkill(new List<Character> { skilledCharacters[1] as Character, skilledCharacters[2] as Character });
+            skilledCharacters[1].UseUltimateSkill(new List<Character> { skilledCharacters[0] as Character, skilledCharacters[2] as Character });
+            skilledCharacters[2].UseUltimateSkill(new List<Character> { skilledCharacters[0] as Character, skilledCharacters[1] as Character });
+
+            //Characters rest to regain resources
+            Character warrior = skilledCharacters[0] as Character;
+            Character barbarian = skilledCharacters[1] as Character;
+            Character sorcerer = skilledCharacters[2] as Character;
+
+            warrior.Rest(8);
+            barbarian.Rest(8);
+            sorcerer.Rest(8);
+
+            //Using ultimate skills
+            skilledCharacters[0].UseUltimateSkill(new List<Character> { skilledCharacters[1] as Character, skilledCharacters[2] as Character });
+            skilledCharacters[1].UseUltimateSkill(new List<Character> { skilledCharacters[0] as Character, skilledCharacters[2] as Character });
+            skilledCharacters[2].UseUltimateSkill(new List<Character> { skilledCharacters[0] as Character, skilledCharacters[1] as Character });
+
+            //Logging info about characters
+            Display.StatInfo(warrior);
+            Display.StatInfo(barbarian);
+            Display.StatInfo(sorcerer);
+
+            //Sorcerer rests to regain resources
+            sorcerer.Rest(8);
+
+            //Sorcerer uses ultimate skill
+            skilledCharacters[2].UseUltimateSkill(new List<Character> { skilledCharacters[0] as Character, skilledCharacters[1] as Character });
+
+            //Logging info about characters
+            Display.StatInfo(warrior);
+            Display.StatInfo(barbarian);
+            Display.StatInfo(sorcerer);
 
         }
-    }
+
 
 
         //Task 1: Classes and Constructors
@@ -58,4 +132,5 @@ namespace Task
 
         //Again, remember to add checks to ensure Health, Strength, and other stats cannot go negative.
         //A character can't use skills or attack if their Health is at 0.
+    }
 }
