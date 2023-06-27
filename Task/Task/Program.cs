@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Task
 {
@@ -8,7 +9,166 @@ namespace Task
     {
         static void Main(string[] args)
         {
+
+            //Task1();
+
+            //Task2();
+
+            //Task3();
+         
+            //Task4();
         }
+
+
+        public static void Task1()
+        {
+            List<int> nums = new List<int> { 1, 2, 4, 5, 6, 15, 23, 31, 40, 97, 99 };
+
+            List<int> primes = nums.Where(isPrimeNumber).ToList();
+
+            foreach (int x in primes)
+            {
+                Console.WriteLine(x);
+            }
+        }
+
+        public static Func<int, bool> isPrimeNumber = x =>
+        {
+            if (x <= 0) return false;
+            if (x == 1) return false;
+            if (x == 2) return true;
+
+            for (int i = 2; i <= Math.Sqrt(x); i++)
+            {
+                if (x % i == 0) return false;
+            }
+            return true;
+        };
+
+
+
+        public static void Task2()
+        {
+            List<string> list = new List<string>() { "cat", "dog", "air", "pee" };
+
+            List<string> results = list.Where(hasMoreConsonants).ToList();
+
+            foreach (string result in results)
+            {
+                Console.WriteLine(result);
+            }
+        }
+
+        public static Func<string, bool> hasMoreConsonants = x =>
+        {
+            char[] vowels = { 'A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u'};
+            int vowelCount = 0;
+
+            int length = x.Length;
+
+            for(int i=0; i < length; i++)
+            {
+                if (vowels.Contains(x[i]))
+                {
+                    vowelCount++;
+                }
+            }
+            return vowelCount <= length/2;
+        };
+
+
+
+        public static void Task3()
+        {
+            List<Student> students = new List<Student>
+            {
+                new Student("First",new List<decimal>{ 50, 70, 30, 66, 75 }),
+                new Student("Second", new List<decimal> { 42, 51, 86, 97, 35, 48, 100 }),
+                new Student("Third", new List<decimal> { 75, 85, 96 }),
+                new Student("Fourth", new List<decimal> { 76, 74, 85, 89, 93, 81, 98, 85 })
+            };
+
+            List<Student> result = students.Where(hasGreatAverage).ToList();
+
+            foreach (Student student in result)
+            {
+                Console.WriteLine(student.Name);
+            }
+        }
+
+        public class Student
+        {
+            public string Name { get; set; }
+            public List<decimal> Grades { get; set; }
+
+            public Student(string name, List<decimal> grades)
+            {
+                Name = name;
+                Grades = grades;
+            }
+        }
+
+        public static Func<Student, bool> hasGreatAverage = student =>
+        {
+            decimal total = 0;
+            int count = student.Grades.Count;
+            for (int i = 0; i < count; i++)
+            {
+                total += student.Grades[i];
+            }
+
+            //Console.WriteLine(total / count);
+            return total / count > 85;
+
+        };
+
+
+
+        public static void Task4()
+        {
+            List<Employee> employees = new List<Employee>()
+            {
+                new Employee("First","HR",4000),
+                new Employee("Second","Sales",4500),
+                new Employee("Third","IT",6000),
+                new Employee("Fourth","HR",6500),
+                new Employee("Fifth","Sales",5500),
+                new Employee("Sixth","Sales",3500),
+                new Employee("Seventh","IT",7000),
+            };
+
+            List<Employee> result = employees.Where(satisfiesBothConditions).ToList();
+
+            foreach (Employee employee in result)
+            {
+                Console.WriteLine(employee.Name);
+            }
+
+        }
+
+        public class Employee
+        {
+            public string Name { get; set; }
+            public string Department { get; set; }
+            public decimal Salary { get; set; }
+
+            public Employee(string name, string department, decimal salary)
+            {
+                Name = name;
+                Department = department;
+                Salary = salary;
+            }
+        }
+
+        public static Func<Employee, bool> worksInSales = employee => employee.Department == "Sales";
+
+        public static Func<Employee, bool> earns5kSalary = employee => employee.Salary > 5000;
+
+        public static Func<Employee, bool> satisfiesBothConditions = employee =>
+        {
+            return worksInSales(employee) && earns5kSalary(employee);
+        };
+           
     }
 
     // Before you start!!!!!!!!!!!!
