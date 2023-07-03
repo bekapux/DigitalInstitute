@@ -13,30 +13,29 @@ namespace Task
     {
         static void Main(string[] args)
         {
-
-
-
-
-
-
+            DebugLogger.LogMessage("Hello from Degub mode\n");
 
 
             //Part of Task 2.Uncomment when needed
-            //var student = new Person();
-            //student.Age = -5;
+            var student = new Person();
+            student.Age = -5;
+            student.LastName = string.Empty;
+            student.LastName = "asdfghj";
+            student.PhoneNumber = "55555555";
+            student.PersonID = -4;
 
-            //var results = new List<ValidationResult>();
-            //var context = new ValidationContext(student);
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(student);
 
-            //bool isValid = Validator.TryValidateObject(student, context, results, true);
+            bool isValid = Validator.TryValidateObject(student, context, results, true);
 
-            //if (!isValid)
-            //{
-            //    foreach (var validationResult in results)
-            //    {
-            //        Console.WriteLine(validationResult.ErrorMessage);
-            //    }
-            //}
+            if (!isValid)
+            {
+                foreach (var validationResult in results)
+                {
+                    Console.WriteLine(validationResult.ErrorMessage);
+                }
+            }
         }
     }
     //    Task 1: Create a Simple Logging Mechanism for Debugging
@@ -77,7 +76,7 @@ namespace Task
     //[Url]: Validates the property for a correct URL format.
 
     //here is an example of using data annotations
-    public class Person
+    public class Person1
     {
         [MinLength(2)]
         [MaxLength(22)]
@@ -97,4 +96,38 @@ namespace Task
     }
 
     // Create your custom class and use this custom annotations. then use the validation logic provided in main method above.
+
+    public class Person
+    {
+        [Display(Name="Person ID")]
+        [Range(0,int.MaxValue, ErrorMessage ="Id must be positive number")]
+        public int PersonID { get; set; }
+
+
+        [Display(Name= "Person Name")]
+        [Required]
+        [StringLength(30, ErrorMessage ="Name Cannot be more than 30 characters")]
+        public string Name { get; set; }
+
+
+
+        [Display(Name = "Person LastName")]
+        [Required]
+        [StringLength(5, ErrorMessage ="MaxLength of LastName is 5 characters")] // for testing StringLength Annotation
+        public string LastName { get; set; }
+
+
+        [Display(Name="Person Age")]
+        [Range(0,110)]
+        public int Age { get; set; }
+
+
+        [Display(Name="Phone Number")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage ="Invalid Phone Number")]
+        public string PhoneNumber { get; set; }
+
+    }
+
+
+
 }
