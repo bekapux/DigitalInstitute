@@ -13,30 +13,52 @@ namespace Task
     {
         static void Main(string[] args)
         {
+            //Task 1
+            DebugLogger.LogMessage("Hello From Debug\n");
 
+            //Task 2
+            Person person = new Person();
+            person.Name = "John Doe";
+            person.Age = 30;
+            person.Email = "john.doe@example.com";
 
+            var validationContext = new ValidationContext(person);
+            var validationResults = new System.Collections.Generic.List<ValidationResult>();
 
+            bool isValid = Validator.TryValidateObject(person, validationContext, validationResults, true);
+
+            if (isValid)
+            {
+                Console.WriteLine("Validation passed!");
+            }
+            else
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    Console.WriteLine(validationResult.ErrorMessage);
+                }
+            }
 
 
 
 
 
             //Part of Task 2.Uncomment when needed
-            //var student = new Person();
-            //student.Age = -5;
+            var student = new Person();
+            student.Age = -5;
 
-            //var results = new List<ValidationResult>();
-            //var context = new ValidationContext(student);
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(student);
 
-            //bool isValid = Validator.TryValidateObject(student, context, results, true);
+            bool isValidD = Validator.TryValidateObject(student, context, results, true);
 
-            //if (!isValid)
-            //{
-            //    foreach (var validationResult in results)
-            //    {
-            //        Console.WriteLine(validationResult.ErrorMessage);
-            //    }
-            //}
+            if (!isValid)
+            {
+                foreach (var validationResult in results)
+                {
+                    Console.WriteLine(validationResult.ErrorMessage);
+                }
+            }
         }
     }
     //    Task 1: Create a Simple Logging Mechanism for Debugging
@@ -82,11 +104,8 @@ namespace Task
         [MinLength(2)]
         [MaxLength(22)]
         [Required]
-        public string Name{ get; set; }
+        public string Name { get; set; }
 
-        /// <summary>
-        /// Age of the student
-        /// </summary>
         [Range(0, 150)]
         [Required]
         public int Age { get; set; }
@@ -94,6 +113,20 @@ namespace Task
         [EmailAddress]
         [Required]
         public string Email { get; set; }
+    }
+
+    public class CustomValidationAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            if (value != null && value is string stringValue)
+            {
+                // Custom validation logic
+                return stringValue.StartsWith("Custom");
+            }
+
+            return false;
+        }
     }
 
     // Create your custom class and use this custom annotations. then use the validation logic provided in main method above.
